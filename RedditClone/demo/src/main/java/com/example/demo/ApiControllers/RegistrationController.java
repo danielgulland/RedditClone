@@ -36,6 +36,5 @@ public class RegistrationController {
 
         userRepository.save(user);
         return usernameResponse.getMessage() + " " + emailResponse.getMessage();
-
     }
 }
