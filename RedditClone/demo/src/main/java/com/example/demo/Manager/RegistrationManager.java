@@ -2,7 +2,7 @@ package com.example.demo.Manager;
 
 import com.example.demo.Models.CommonResponse;
 import com.example.demo.Models.User;
-import com.example.demo.Repository.UserRepository;
+import com.example.demo.Repository.UserDAO;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -10,8 +10,8 @@ import java.util.Optional;
 @Component
 public class RegistrationManager {
 
-    public CommonResponse validateUsername(User user, UserRepository userRepository) {
-        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
+    public CommonResponse validateUsername(User user, UserDAO userDAO) {
+        Optional<User> existingUser = userDAO.findByUsername(user.getUsername());
 
         if(existingUser.isEmpty()) {
             return new CommonResponse(true, "Username is valid");
@@ -20,8 +20,8 @@ public class RegistrationManager {
         return new CommonResponse(false, "Username already exists");
     }
 
-    public CommonResponse validateEmail(User user, UserRepository userRepository) {
-        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+    public CommonResponse validateEmail(User user, UserDAO userDAO) {
+        Optional<User> existingUser = userDAO.findByEmail(user.getEmail());
 
         if(existingUser.isEmpty()) {
             return new CommonResponse(true, "Email is valid");

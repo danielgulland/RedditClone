@@ -3,7 +3,7 @@ package com.example.demo.ApiControllers;
 import com.example.demo.Manager.RegistrationManager;
 import com.example.demo.Models.CommonResponse;
 import com.example.demo.Models.User;
-import com.example.demo.Repository.UserRepository;
+import com.example.demo.Repository.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,15 +16,15 @@ import javax.validation.Valid;
 @RequestMapping("/register")
 public class RegistrationController {
     @Autowired
-    UserRepository userRepository;
+    UserDAO userDAO;
 
     @Autowired
     RegistrationManager registrationManager;
 
     @PostMapping("/user")
     public String registerUser(@Valid @RequestBody User user) {
-        CommonResponse usernameResponse = registrationManager.validateUsername(user, userRepository);
-        CommonResponse emailResponse = registrationManager.validateEmail(user, userRepository);
+        CommonResponse usernameResponse = registrationManager.validateUsername(user, userDAO);
+        CommonResponse emailResponse = registrationManager.validateEmail(user, userDAO);
 
         if(!usernameResponse.isResponse()) {
             return usernameResponse.getMessage();
@@ -34,7 +34,7 @@ public class RegistrationController {
             return emailResponse.getMessage();
         }
 
-        userRepository.save(user);
+        userDAO.save(user);
         return usernameResponse.getMessage() + " " + emailResponse.getMessage();
     }
 }
