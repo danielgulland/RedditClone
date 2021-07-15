@@ -38,6 +38,6 @@ public class User {
     @Setter
     private boolean verifiedEmail;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private PasswordResetToken passwordResetToken;
 }

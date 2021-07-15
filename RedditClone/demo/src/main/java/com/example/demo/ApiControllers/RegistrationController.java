@@ -47,11 +47,23 @@ public class RegistrationController {
         return validator.getResponseEntity();
     }
 
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity deleteUser(@RequestParam("userId") long userId) {
+
+        if(validator.checkForNoErrors(userId <= 0, ValidationError.BAD_REQUEST, USER_ID)) {
+            userService.deleteUser(userId);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+
+        return validator.getResponseEntity();
+    }
+
     @PostMapping("/resetPassword")
     public ResponseEntity resetPassword(HttpServletRequest request, @RequestParam("email") String email) {
 
         if(validator.checkForNoErrors(StringUtils.isNullOrEmpty(email), ValidationError.MISSING_VALUE, EMAIL)) {
             userService.resetPassword(email);
+            System.out.println("RESET PASSWORD");
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }
 

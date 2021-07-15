@@ -83,6 +83,12 @@ public class UserService {
         userDAO.save(user);
     }
 
+    public void deleteUser(long userId) {
+        Optional<User> existingUser = userDAO.findByUserId(userId);
+
+        existingUser.ifPresent(user -> userDAO.delete(user));
+    }
+
     public void resetPassword(String email) {
         Optional<User> existingUser = userDAO.findByEmail(email);
 
@@ -119,8 +125,6 @@ public class UserService {
 
         long difference =  currentDate.getTime() - createdTokenDate.getTime();
         long minutes = TimeUnit.MILLISECONDS.toMinutes(difference);
-
-        System.out.println(minutes);
 
         return minutes <= TOTAL_MINUTES_UNTIL_TOKEN_EXPIRES;
     }
