@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Optional;
-
 import static com.example.demo.Constants.FieldConstants.*;
 
 
@@ -43,11 +41,11 @@ public class LoginController {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
         if(validator.chain(StringUtils.isNullOrEmpty(userCredentials.getUsername()), ValidationError.MISSING_VALUE, USERNAME)
-                .check(StringUtils.isNullOrEmpty(userCredentials.getPassword()), ValidationError.MISSING_VALUE, PASSWORD)) {
+                .checkForNoErrors(StringUtils.isNullOrEmpty(userCredentials.getPassword()), ValidationError.MISSING_VALUE, PASSWORD)) {
 
             User user = userService.getUserByUsername(userCredentials.getUsername());
 
-            if(validator.check(bCryptPasswordEncoder.matches(userCredentials.getPassword(), user.getPassword()), ValidationError.INVALID_USERNAME_OR_PASSWORD, USERNAME_OR_PASSWORD)) {
+            if(validator.checkForNoErrors(bCryptPasswordEncoder.matches(userCredentials.getPassword(), user.getPassword()), ValidationError.INVALID_USERNAME_OR_PASSWORD, USERNAME_OR_PASSWORD)) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
         }

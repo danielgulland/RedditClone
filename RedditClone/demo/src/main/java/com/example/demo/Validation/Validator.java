@@ -23,15 +23,15 @@ public class Validator {
     private final Map<String, List<String>> errors;
     private HttpStatus status = HttpStatus.OK;
 
-    public boolean check(final boolean expression, final @NonNull ValidationError error, final String field) {
-        if(!expression) {
+    public boolean checkForNoErrors(final boolean expression, final @NonNull ValidationError error, final String field) {
+        if(expression) {
             addError(error, field);
         }
         return errors.isEmpty();
     }
 
     public Validator chain(final boolean expression, final @NonNull ValidationError error, final String field) {
-        if(!expression) {
+        if(expression) {
             addError(error, field);
         }
         return this;
