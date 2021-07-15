@@ -40,9 +40,4 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private PasswordResetToken passwordResetToken;
-
-//    @Getter
-//    @Setter
-//    @OneToOne(mappedBy = "user")
-//    private PasswordResetToken passwordResetToken;
 }

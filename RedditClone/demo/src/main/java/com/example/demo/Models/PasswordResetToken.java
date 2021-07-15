@@ -26,7 +26,7 @@ public class PasswordResetToken {
     @Setter
 //    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 //    @JoinColumn(nullable = false, name = "userId")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
 

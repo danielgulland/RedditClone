@@ -61,22 +61,23 @@ public class RegistrationController {
     @GetMapping("/checkToken")
     private ResponseEntity checkToken(@RequestParam("token") String token, @RequestParam("userId") long userId) {
 
-        //How should I use validator here. What is there to check?
-        if(userService.checkToken(token, userId)) {
-            System.out.println("true");
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        }
-        else {
-            System.out.println("false");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+        if(validator.chain(StringUtils.isNullOrEmpty(token), ValidationError.MISSING_VALUE, PASSWORD_RESET_TOKEN)
+                .checkForNoErrors(userId <= 0, ValidationError.BAD_REQUEST, USER_ID)) {
+
+                if (userService.checkToken(token, userId)) {
+                    return ResponseEntity.status(HttpStatus.OK).body(null);
+                }
+            }
+
+        return validator.getResponseEntity();
     }
 
     @PostMapping("/savePassword")
     private ResponseEntity savePassword(@RequestBody PasswordReset passwordReset, long userId) {
 
         if(validator.chain(StringUtils.isNullOrEmpty(passwordReset.getNewPassword()), ValidationError.MISSING_VALUE, PASSWORD)
-            .checkForNoErrors(StringUtils.isNullOrEmpty(passwordReset.getNewPassword()), ValidationError.MISSING_VALUE, PASSWORD)) {
+                .chain(StringUtils.isNullOrEmpty(passwordReset.getConfirmPassword()), ValidationError.MISSING_VALUE, PASSWORD)
+            .checkForNoErrors(userId <= 0, ValidationError.BAD_REQUEST, USER_ID)) {
 
             userService.savePassword(passwordReset.getNewPassword(), passwordReset.getConfirmPassword(), userId);
             return ResponseEntity.status(HttpStatus.OK).body(null);

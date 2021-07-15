@@ -87,7 +87,6 @@ public class UserService {
         Optional<User> existingUser = userDAO.findByEmail(email);
 
         if (existingUser.isPresent()) {
-            System.out.println("HERE");
             String token = UUID.randomUUID().toString();
             String contextPath = REGISTER_URL + "/checkToken?token=" + token + "&userId=" + existingUser.get().getUserId();
             emailService.createPasswordResetToken(existingUser.get(), token, new Date());
@@ -131,12 +130,8 @@ public class UserService {
         Optional<PasswordResetToken> passwordResetToken = passwordTokenRepository.findByUser_userId(userId);
 
         if(existingUser.isPresent() && passwordResetToken.isPresent()) {
-            //Do we need to delete the token here when its a true case? Or leave it available to the user until it expires.
+            passwordTokenRepository.delete(passwordResetToken.get());
             return passwordResetToken.get().getToken().equals(token) && checkForExpiredToken(passwordResetToken.get().getExpiredTokenDate());
-//            else {
-//                //User needs a new token
-//                passwordTokenRepository.delete(passwordResetToken.get());
-//            }
         }
         return false;
     }

@@ -19,8 +19,8 @@ public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
-    public void createPasswordResetToken(User user, String token, Date experationDate) {
-        PasswordResetToken myToken = new PasswordResetToken(token, user, experationDate) ;
+    public void createPasswordResetToken(User user, String token, Date expirationDate) {
+        PasswordResetToken myToken = new PasswordResetToken(token, user, expirationDate) ;
         passwordTokenRepository.save(myToken);
     }
 
@@ -31,6 +31,5 @@ public class EmailService {
             message.setSubject("Password Reset");
             message.setText(contextPath);
             emailSender.send(message);
-            System.out.println("Sent..");
     }
 }
