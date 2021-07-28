@@ -33,10 +33,6 @@ public class EmailService {
         emailConfirmationDAO.save(myToken);
     }
 
-//    public void createEmailConfirmationToken(String token) {
-//        EmailConfirmation emailConfirmation = new EmailConfirmation(token);
-//    }
-
     public void constructAndSendResetTokenEmail(String contextPath, String email, final String EMAIL_SENT_FROM) {
         SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(EMAIL_SENT_FROM);

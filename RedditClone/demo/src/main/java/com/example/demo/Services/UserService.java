@@ -54,7 +54,6 @@ public class UserService {
         }
 
         throw new RuntimeException("bad");
-//        throw new ApiException("bad", ValidationError.NOT_FOUND);
     }
 
     public User getUserByEmail(final String email) {
@@ -124,7 +123,7 @@ public class UserService {
 
         if (existingUser.isPresent()) {
             String token = UUID.randomUUID().toString();
-            String contextPath = REGISTER_URL + "/checkToken?token=" + token + "&userId=" + existingUser.get().getUserId();
+            String contextPath = REGISTER_URL + "/checkPasswordResetToken?token=" + token + "&userId=" + existingUser.get().getUserId();
             emailService.createPasswordResetToken(existingUser.get().getUserId(), token, new Date());
             emailService.constructAndSendResetTokenEmail(contextPath, email, EMAIL_SENT_FROM);
         }

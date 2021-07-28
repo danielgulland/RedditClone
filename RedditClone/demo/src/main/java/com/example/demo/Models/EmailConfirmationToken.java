@@ -36,8 +36,4 @@ public class EmailConfirmationToken {
         this.token = token;
         this.dateCreated = dateCreated;
     }
-
-    //    public EmailConfirmation(String emailConfirmationToken) {
-//        this.emailConfirmationToken = emailConfirmationToken;
-//    }
 }
