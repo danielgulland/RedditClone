@@ -1,8 +1,10 @@
 package com.example.demo.Services;
 
+import com.example.demo.Models.EmailConfirmationToken;
 import com.example.demo.Models.PasswordResetToken;
 import com.example.demo.Models.User;
-import com.example.demo.Repository.PasswordTokenRepository;
+import com.example.demo.Repository.EmailConfirmationDAO;
+import com.example.demo.Repository.PasswordTokenDAO;
 import com.example.demo.Repository.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,10 +27,13 @@ public class UserService {
     private UserDAO userDAO;
 
     @Autowired
+    private EmailConfirmationDAO emailConfirmationDAO;
+
+    @Autowired
     private EmailService emailService;
 
     @Autowired
-    private PasswordTokenRepository passwordTokenRepository;
+    private PasswordTokenDAO passwordTokenDAO;
 
 
     public User getUserById(final long id) {
@@ -81,6 +86,31 @@ public class UserService {
         user.setPassword(hashedPass);
 
         userDAO.save(user);
+
+        String token = UUID.randomUUID().toString();
+        String contextPath = REGISTER_URL + "/confirmEmail?token=" + token + "&userId=" + user.getUserId();
+        emailService.createEmailConfirmationToken(user.getUserId(), token, new Date());
+        System.out.println(user.getUserId());
+        emailService.constructAndSendEmailVerification(contextPath, user.getEmail(), EMAIL_SENT_FROM);
+    }
+
+    public void confirmEmail(String token, long userId) {
+        Optional<User> existingUser = userDAO.findByUserId(userId);
+        Optional<EmailConfirmationToken> confirmEmailToken = emailConfirmationDAO.findByUserId(userId);
+
+        if(existingUser.isEmpty()) {
+            throw new RuntimeException("User does not exist");
+        }
+
+        if (confirmEmailToken.isEmpty()) {
+            throw new RuntimeException("Email does not exist");
+        }
+
+        if(confirmEmailToken.get().getToken().equals(token)) {
+            emailConfirmationDAO.delete(confirmEmailToken.get());
+            existingUser.get().setVerifiedEmail(true);
+            userDAO.save(existingUser.get());
+        }
     }
 
     public void deleteUser(long userId) {
@@ -95,7 +125,7 @@ public class UserService {
         if (existingUser.isPresent()) {
             String token = UUID.randomUUID().toString();
             String contextPath = REGISTER_URL + "/checkToken?token=" + token + "&userId=" + existingUser.get().getUserId();
-            emailService.createPasswordResetToken(existingUser.get(), token, new Date());
+            emailService.createPasswordResetToken(existingUser.get().getUserId(), token, new Date());
             emailService.constructAndSendResetTokenEmail(contextPath, email, EMAIL_SENT_FROM);
         }
         else {
@@ -129,12 +159,12 @@ public class UserService {
         return minutes <= TOTAL_MINUTES_UNTIL_TOKEN_EXPIRES;
     }
 
-    public boolean checkToken(String token, long userId) {
+    public boolean checkPasswordResetToken(String token, long userId) {
         Optional<User> existingUser = userDAO.findByUserId(userId);
-        Optional<PasswordResetToken> passwordResetToken = passwordTokenRepository.findByUser_userId(userId);
+        Optional<PasswordResetToken> passwordResetToken = passwordTokenDAO.findByUserId(userId);
 
         if(existingUser.isPresent() && passwordResetToken.isPresent()) {
-            passwordTokenRepository.delete(passwordResetToken.get());
+            passwordTokenDAO.delete(passwordResetToken.get());
             return passwordResetToken.get().getToken().equals(token) && checkForExpiredToken(passwordResetToken.get().getExpiredTokenDate());
         }
         return false;

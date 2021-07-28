@@ -38,6 +38,11 @@ public class User {
     @Setter
     private boolean verifiedEmail;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
     private PasswordResetToken passwordResetToken;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    private EmailConfirmationToken emailConfirmationToken;
 }

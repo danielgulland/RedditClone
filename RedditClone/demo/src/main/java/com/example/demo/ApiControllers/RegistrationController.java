@@ -50,6 +50,7 @@ public class RegistrationController {
     @DeleteMapping("/deleteUser")
     public ResponseEntity deleteUser(@RequestParam("userId") long userId) {
 
+
         if(validator.checkForNoErrors(userId <= 0, ValidationError.BAD_REQUEST, USER_ID)) {
             userService.deleteUser(userId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -70,13 +71,24 @@ public class RegistrationController {
         return validator.getResponseEntity();
     }
 
-    @GetMapping("/checkToken")
-    private ResponseEntity checkToken(@RequestParam("token") String token, @RequestParam("userId") long userId) {
+    @GetMapping("/confirmEmail")
+    private ResponseEntity confirmEmail(@RequestParam("token") String token, @RequestParam("userId") long userId) {
+
+        if(validator.checkForNoErrors(StringUtils.isNullOrEmpty(token), ValidationError.MISSING_VALUE, EMAIL_RESET_TOKEN)) {
+            userService.confirmEmail(token, userId);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+
+        return validator.getResponseEntity();
+    }
+
+    @GetMapping("/checkPasswordResetToken")
+    private ResponseEntity checkPasswordResetToken(@RequestParam("token") String token, @RequestParam("userId") long userId) {
 
         if(validator.chain(StringUtils.isNullOrEmpty(token), ValidationError.MISSING_VALUE, PASSWORD_RESET_TOKEN)
                 .checkForNoErrors(userId <= 0, ValidationError.BAD_REQUEST, USER_ID)) {
 
-                if (userService.checkToken(token, userId)) {
+                if (userService.checkPasswordResetToken(token, userId)) {
                     return ResponseEntity.status(HttpStatus.OK).body(null);
                 }
             }

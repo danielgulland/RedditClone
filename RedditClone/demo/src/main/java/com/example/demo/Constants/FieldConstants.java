@@ -13,4 +13,5 @@ public final class FieldConstants {
     public static final String PASSWORD_RESET_TOKEN = "Password reset token";
     public static final String USER_ID = "user id";
     public static final long TOTAL_MINUTES_UNTIL_TOKEN_EXPIRES = 1;
+    public static final String EMAIL_RESET_TOKEN = "Email reset token";
 }
