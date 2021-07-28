@@ -47,24 +47,48 @@ public class RegistrationController {
         return validator.getResponseEntity();
     }
 
-    @PostMapping("/resetPassword")
-    public ResponseEntity resetPassword(HttpServletRequest request, @RequestParam("email") String email) {
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity deleteUser(@RequestParam("userId") long userId) {
 
-        if(validator.checkForNoErrors(StringUtils.isNullOrEmpty(email), ValidationError.MISSING_VALUE, EMAIL)) {
-            userService.resetPassword(email);
+
+        if(validator.checkForNoErrors(userId <= 0, ValidationError.BAD_REQUEST, USER_ID)) {
+            userService.deleteUser(userId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }
 
         return validator.getResponseEntity();
     }
 
-    @GetMapping("/checkToken")
-    private ResponseEntity checkToken(@RequestParam("token") String token, @RequestParam("userId") long userId) {
+    @PostMapping("/resetPassword")
+    public ResponseEntity resetPassword(HttpServletRequest request, @RequestParam("email") String email) {
+
+        if(validator.checkForNoErrors(StringUtils.isNullOrEmpty(email), ValidationError.MISSING_VALUE, EMAIL)) {
+            userService.resetPassword(email);
+            System.out.println("RESET PASSWORD");
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+
+        return validator.getResponseEntity();
+    }
+
+    @GetMapping("/confirmEmail")
+    private ResponseEntity confirmEmail(@RequestParam("token") String token, @RequestParam("userId") long userId) {
+
+        if(validator.checkForNoErrors(StringUtils.isNullOrEmpty(token), ValidationError.MISSING_VALUE, EMAIL_RESET_TOKEN)) {
+            userService.confirmEmail(token, userId);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+
+        return validator.getResponseEntity();
+    }
+
+    @GetMapping("/checkPasswordResetToken")
+    private ResponseEntity checkPasswordResetToken(@RequestParam("token") String token, @RequestParam("userId") long userId) {
 
         if(validator.chain(StringUtils.isNullOrEmpty(token), ValidationError.MISSING_VALUE, PASSWORD_RESET_TOKEN)
                 .checkForNoErrors(userId <= 0, ValidationError.BAD_REQUEST, USER_ID)) {
 
-                if (userService.checkToken(token, userId)) {
+                if (userService.checkPasswordResetToken(token, userId)) {
                     return ResponseEntity.status(HttpStatus.OK).body(null);
                 }
             }
