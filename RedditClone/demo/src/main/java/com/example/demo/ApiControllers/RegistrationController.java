@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.example.demo.Constants.FieldConstants.*;
@@ -36,9 +37,13 @@ public class RegistrationController {
     @PostMapping("/user")
     public ResponseEntity registerUser(@Valid @RequestBody User user) {
 
+        Matcher matcher = pattern.matcher(user.getEmail());
         if(validator.chain(StringUtils.isNullOrEmpty(user.getUsername()), ValidationError.MISSING_VALUE, USERNAME)
+                .chain(user.getUsername().length() > 20, ValidationError.USERNAME_EXCEEDS_LENGTH, USERNAME)
                 .chain(StringUtils.isNullOrEmpty(user.getPassword()), ValidationError.MISSING_VALUE, PASSWORD)
-                .checkForNoErrors(StringUtils.isNullOrEmpty(user.getEmail()), ValidationError.MISSING_VALUE, EMAIL)) {
+                .chain(user.getPassword().length() < 8, ValidationError.PASSWORD_DOES_NOT_MEET_REQUIRED_LENGTH, PASSWORD)
+                .chain(StringUtils.isNullOrEmpty(user.getEmail()), ValidationError.MISSING_VALUE, EMAIL)
+                .checkForNoErrors(!matcher.matches(), ValidationError.INVALID_EMAIL_FORMAT, EMAIL)) {
 
             userService.registerUser(user);
             return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -49,7 +54,6 @@ public class RegistrationController {
 
     @DeleteMapping("/deleteUser")
     public ResponseEntity deleteUser(@RequestParam("userId") long userId) {
-
 
         if(validator.checkForNoErrors(userId <= 0, ValidationError.BAD_REQUEST, USER_ID)) {
             userService.deleteUser(userId);
