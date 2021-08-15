@@ -13,7 +13,6 @@ public class PasswordResetToken {
 
     @Id
     @Getter
-    @Setter
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long passwordResetId;
 

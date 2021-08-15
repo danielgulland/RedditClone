@@ -8,6 +8,10 @@ public final class FieldConstants {
     public static final String USERNAME = "Username";
     public static final String EMAIL = "Email";
     public static final String PASSWORD = "Password";
+    public static final String TITLE = "Title";
+    public static final String POINTS = "Points";
+    public static final String INFORMATION = "Information";
+    public static final String POST_ID = "Post ID";
     public static final String OLD_PASSWORD = "Old password";
     public static final String USERNAME_OR_PASSWORD = "Username or password";
     public static final String PASSWORD_RESET_TOKEN = "Password reset token";

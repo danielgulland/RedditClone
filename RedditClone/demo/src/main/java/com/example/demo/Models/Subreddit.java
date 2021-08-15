@@ -10,29 +10,21 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class EmailConfirmationToken {
+public class Subreddit {
     @Id
     @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long emailConfirmationId;
+    private long subredditId;
 
     @Getter
     @Setter
-    private long userId;
+    String subredditName;
 
     @Getter
     @Setter
-    String token;
+    String sideSummary;
 
     @Getter
     @Setter
     Date dateCreated;
-
-    public EmailConfirmationToken() {}
-
-    public EmailConfirmationToken(long userId, String token, Date dateCreated) {
-        this.userId = userId;
-        this.token = token;
-        this.dateCreated = dateCreated;
-    }
 }
