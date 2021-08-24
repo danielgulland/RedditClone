@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+//should be service
 @Component
 public class EmailService {
 

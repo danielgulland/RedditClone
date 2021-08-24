@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 public class Comment {
@@ -19,9 +18,17 @@ public class Comment {
 
     @Getter
     @Setter
-    Date dateCreated;
+    String dateCreated;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "postId", referencedColumnName = "postId")
     private Post post;
+
+    public Comment() {}
+
+    public Comment(String content, String dateCreated, Post post) {
+        this.content = content;
+        this.dateCreated = dateCreated;
+        this.post = post;
+    }
 }

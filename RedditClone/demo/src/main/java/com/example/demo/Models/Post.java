@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -28,18 +27,23 @@ public class Post {
 
     @Getter
     @Setter
-    Date dateCreated;
+    String dateCreated;
 
-    @OneToMany
+    @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
-    @Getter
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User user;
+    public Post() {}
 
-    @Getter
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "subredditId", referencedColumnName = "subredditId")
-    private Subreddit subreddit;
+    public Post(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+//    @Getter
+//    @ManyToOne(cascade = CascadeType.REMOVE)
+//    @JoinColumn(name = "userId", referencedColumnName = "userId")
+//    private User user;
+//
+//    @Getter
+//    @ManyToOne(cascade = CascadeType.REMOVE)
+//    @JoinColumn(name = "subredditId", referencedColumnName = "subredditId")
+//    private Subreddit subreddit;
 }
