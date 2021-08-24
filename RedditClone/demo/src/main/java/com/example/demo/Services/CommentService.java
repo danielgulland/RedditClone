@@ -37,7 +37,7 @@ public class CommentService {
     }
 
     public void createComment(Comment comment, long postId) {
-        Optional<Post> existingPost = postDAO.findByPostId(postId);
+        Optional<Post> existingPost = postDAO.findById(postId);
 
         if(existingPost.isEmpty()) {
             throw new RuntimeException("Post does not exists to comment on...");
@@ -47,7 +47,7 @@ public class CommentService {
     }
 
     public void updateComment(Comment comment, long commentId) {
-        Optional<Comment> existingComment = commentDAO.findByCommentId(commentId);
+        Optional<Comment> existingComment = commentDAO.findById(commentId);
 
         if(existingComment.isEmpty()) {
             throw new RuntimeException("Comment does not exist...");
@@ -57,7 +57,7 @@ public class CommentService {
     }
 
     public void deleteComment(long commentId) {
-        Optional<Comment> existingComment = commentDAO.findByCommentId(commentId);
+        Optional<Comment> existingComment = commentDAO.findById(commentId);
 
         if(existingComment.isEmpty()) {
             throw new RuntimeException("Comment does not exist...");

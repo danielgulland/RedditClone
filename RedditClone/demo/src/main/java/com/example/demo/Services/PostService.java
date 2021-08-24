@@ -36,7 +36,7 @@ public class PostService {
     }
 
     public void updatePost(long postId, Post post) {
-        Optional<Post> existingPost = postDAO.findByPostId(postId);
+        Optional<Post> existingPost = postDAO.findById(postId);
 
         if(existingPost.isEmpty()) {
             throw new RuntimeException("Post does not exist...");
@@ -55,7 +55,7 @@ public class PostService {
     }
 
     public void deletePost(long postId) {
-        Optional<Post> existingPost = postDAO.findByPostId(postId);
+        Optional<Post> existingPost = postDAO.findById(postId);
 
         if(existingPost.isEmpty()) {
             throw new RuntimeException("Post does not exist...");
